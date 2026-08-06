@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA LUXE | High Fashion & Full E-Commerce System</title>
+  
+  <!-- 1. Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- 3. Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- 4. Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif-luxury { font-family: 'Playfair Display', serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+  <!-- HEADER / NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- LOGO & MAIN NAV -->
+      <div class="flex items-center gap-8">
+        <a href="#" onclick="switchTab('storefront')" class="font-serif-luxury text-2xl tracking-widest uppercase font-bold text-stone-900">
+          AURA<span class="text-stone-400 font-light">.LUXE</span>
+        </a>
+        
+        <nav class="hidden md:flex items-center gap-6 text-xs uppercase tracking-widest font-medium text-stone-600">
+          <button onclick="switchTab('storefront')" id="nav-shop-btn" class="hover:text-black transition text-black font-semibold">Cửa Hàng</button>
+          <button onclick="toggleLoyaltyModal(true)" class="hover:text-black transition flex items-center gap-1 text-amber-600 font-bold">
+            <i data-lucide="crown" class="w-3.5 h-3.5"></i> <span>Đặc Quyền Thành Viên</span>
+          </button>
+          <button onclick="switchTab('admin')" id="nav-admin-btn" class="hover:text-black transition flex items-center gap-1.5 text-stone-400">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span id="t-nav-admin">Admin Portal</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- USER AUTH & SYSTEM CONTROLS -->
+      <div class="flex items-center gap-3 text-xs font-semibold">
+        <!-- Khu vực hiển thị Nút Đăng nhập hoặc Thông tin User -->
+        <div id="user-auth-section"></div>
+
+        <!-- Đổi Ngôn ngữ (VI / EN) -->
+        <div class="flex items-center bg-stone-100 rounded-full p-1 border border-stone-200">
+          <button onclick="setLanguage('VI')" id="lang-vi" class="px-2.5 py-1 rounded-full bg-white text-black shadow-sm transition">VI</button>
+          <button onclick="setLanguage('EN')" id="lang-en" class="px-2.5 py-1 rounded-full text-stone-500 hover:text-black transition">EN</button>
+        </div>
+
+        <!-- Đổi Tiền tệ (VND / USD) -->
+        <div class="flex items-center bg-stone-100 rounded-full p-1 border border-stone-200">
+          <button onclick="setCurrency('VND')" id="curr-vnd" class="px-2.5 py-1 rounded-full bg-white text-black shadow-sm transition">VNĐ</button>
+          <button onclick="setCurrency('USD')" id="curr-usd" class="px-2.5 py-1 rounded-full text-stone-500 hover:text-black transition">USD</button>
+        </div>
+
+        <!-- Giỏ Hàng Icon Button -->
+        <button onclick="toggleCartDrawer(true)" class="relative p-2 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 bg-amber-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TAB 1: STOREFRONT (GIAO DIỆN KHÁCH HÀNG) -->
+  <main id="tab-storefront" class="flex-grow">
+    
+    <!-- Hero Banner -->
+    <section class="bg-stone-900 text-stone-100 py-12 px-6 text-center">
+      <p class="text-xs uppercase tracking-[0.3em] text-stone-400 mb-2">Gen Z High-Fashion Collection</p>
+      <h1 class="font-serif-luxury text-3xl md:text-5xl tracking-wide mb-3">AUTUMN / WINTER '26</h1>
+      <p id="t-hero-sub" class="text-stone-400 max-w-lg mx-auto text-xs md:text-sm font-light">
+        Thiết kế tối giản, chất liệu cao cấp và chuẩn phom dáng hiện đại.
+      </p>
+    </section>
+
+    <!-- Promo Banners Section -->
+    <section class="max-w-7xl mx-auto px-6 pt-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div onclick="copyVoucher('GENZ10')" class="cursor-pointer bg-gradient-to-r from-stone-900 to-stone-800 text-white p-5 rounded-2xl shadow-sm hover:scale-[1.02] transition flex items-center justify-between">
+          <div>
+            <span class="bg-amber-500 text-stone-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Ưu đãi Gen Z</span>
+            <h4 class="font-bold text-sm mt-1">Giảm 10% Cho Đơn Đầu Tiên</h4>
+            <p class="text-[11px] text-stone-400 mt-0.5">Mã: <strong class="text-amber-400">GENZ10</strong> (Nhấp để chép)</p>
+          </div>
+          <i data-lucide="ticket-percent" class="w-8 h-8 opacity-80"></i>
+        </div>
+
+        <div onclick="copyVoucher('LUXURY50')" class="cursor-pointer bg-gradient-to-r from-amber-900 to-stone-900 text-white p-5 rounded-2xl shadow-sm hover:scale-[1.02] transition flex items-center justify-between">
+          <div>
+            <span class="bg-white text-amber-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Member Perk</span>
+            <h4 class="font-bold text-sm mt-1">Giảm 50.000 ₫ Đơn Từ 1 Triệu</h4>
+            <p class="text-[11px] text-amber-200/80 mt-0.5">Mã: <strong class="text-white">LUXURY50</strong> (Nhấp để chép)</p>
+          </div>
+          <i data-lucide="sparkles" class="w-8 h-8 opacity-80"></i>
+        </div>
+
+        <div class="bg-stone-200 text-stone-900 p-5 rounded-2xl shadow-sm flex items-center justify-between border border-stone-300">
+          <div>
+            <span class="bg-stone-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Freeship Policy</span>
+            <h4 class="font-bold text-sm mt-1">Miễn Phí Giao Hàng Toàn Quốc</h4>
+            <p class="text-[11px] text-stone-600 mt-0.5">Tự động áp dụng đơn > 2.000.000 ₫</p>
+          </div>
+          <i data-lucide="truck" class="w-8 h-8 opacity-70"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Bar -->
+    <section class="max-w-7xl mx-auto px-6 pt-6">
+      <div class="bg-white p-4 rounded-2xl border border-stone-200 flex flex-col md:flex-row gap-4 justify-between items-center shadow-sm">
+        <div class="relative w-full md:w-80">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+          <input id="search-input" oninput="handleSearchAndFilter()" type="text" placeholder="Tìm kiếm sản phẩm thời trang..." class="w-full pl-9 pr-4 py-2 text-xs border border-stone-200 rounded-xl focus:outline-none focus:border-stone-900">
+        </div>
+
+        <div class="flex gap-3 w-full md:w-auto">
+          <select id="category-filter" onchange="handleSearchAndFilter()" class="w-1/2 md:w-auto py-2 px-3 text-xs border border-stone-200 rounded-xl bg-white font-medium">
+            <option value="ALL">Tất cả danh mục</option>
+            <option value="Outerwear">Outerwear (Áo khoác)</option>
+            <option value="Pants">Pants (Quần)</option>
+            <option value="Tops">Tops (Áo)</option>
+            <option value="Dresses">Dresses (Váy/Đầm)</option>
+            <option value="Footwear">Footwear (Giày dép)</option>
+            <option value="Accessories">Accessories (Phụ kiện)</option>
+          </select>
+
+          <select id="sort-filter" onchange="handleSearchAndFilter()" class="w-1/2 md:w-auto py-2 px-3 text-xs border border-stone-200 rounded-xl bg-white font-medium">
+            <option value="DEFAULT">Sắp xếp: Mặc định</option>
+            <option value="PRICE_ASC">Giá: Thấp đến Cao</option>
+            <option value="PRICE_DESC">Giá: Cao đến Thấp</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Grid Catalog -->
+    <section class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="t-catalog-title" class="text-lg font-bold uppercase tracking-wider">Bộ Sưu Tập Mới</h2>
+        <span id="product-count" class="text-xs text-stone-500 font-semibold">Hiển thị 8 sản phẩm</span>
+      </div>
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </section>
+  </main>
+
+  <!-- TAB 2: ADMIN DASHBOARD (QUẢN TRỊ & BÁO CÁO) -->
+  <main id="tab-admin" class="flex-grow hidden max-w-7xl mx-auto px-6 py-8 w-full">
+    <div class="flex justify-between items-center mb-8 pb-4 border-b border-stone-200">
+      <div>
+        <h1 class="text-2xl font-bold">Admin Portal</h1>
+        <p class="text-xs text-stone-500">Quản lý tồn kho SKU, đơn hàng & Báo cáo doanh thu (Real-time MVP)</p>
+      </div>
+      <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold">System Active</span>
+    </div>
+
+    <!-- Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+        <p class="text-xs text-stone-500 font-medium uppercase tracking-wider">Tổng Doanh Thu</p>
+        <h3 id="admin-total-revenue" class="text-2xl font-bold mt-2">0 ₫</h3>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+        <p class="text-xs text-stone-500 font-medium uppercase tracking-wider">Tổng Đơn Hàng</p>
+        <h3 id="admin-total-orders" class="text-2xl font-bold mt-2">0</h3>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+        <p class="text-xs text-stone-500 font-medium uppercase tracking-wider">Biến thể còn hàng</p>
+        <h3 id="admin-in-stock" class="text-2xl font-bold mt-2">0 SKU</h3>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm flex flex-col">
+        <h3 class="text-sm font-bold uppercase mb-4">Biểu đồ Doanh thu (Tuần)</h3>
+        <div class="relative h-64 w-full">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm flex flex-col">
+        <h3 class="text-sm font-bold uppercase mb-4">Top Sản Phẩm Bán Chạy</h3>
+        <div class="relative h-64 w-full">
+          <canvas id="topProductsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Control -->
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-stone-200 flex justify-between items-center">
+        <h3 class="text-sm font-bold uppercase">Quản Lý Tồn Kho Sản Phẩm (Stock Inventory Control)</h3>
+        <span class="text-xs text-stone-500">Cập nhật trực tiếp số lượng kho</span>
+      </div>
+      <div class="overflow-x-auto max-h-80 overflow-y-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-stone-50 text-stone-500 uppercase tracking-wider sticky top-0 bg-stone-50 z-10">
+            <tr>
+              <th class="p-4">Mã SKU</th>
+              <th class="p-4">Tên Sản phẩm</th>
+              <th class="p-4">Màu sắc</th>
+              <th class="p-4">Kích thước</th>
+              <th class="p-4">Số lượng Tồn Kho</th>
+              <th class="p-4">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="admin-inventory-table" class="divide-y divide-stone-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Orders Management -->
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-stone-200">
+        <h3 class="text-sm font-bold uppercase">Danh sách Đơn hàng (Cập nhật trạng thái)</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-stone-50 text-stone-500 uppercase tracking-wider">
+            <tr>
+              <th class="p-4">Mã Đơn</th>
+              <th class="p-4">Khách hàng</th>
+              <th class="p-4">Tổng tiền</th>
+              <th class="p-4">Thanh toán</th>
+              <th class="p-4">Vận chuyển</th>
+              <th class="p-4">Trạng thái Đơn</th>
+            </tr>
+          </thead>
+          <tbody id="admin-orders-table" class="divide-y divide-stone-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- MODAL LOYALTY -->
+  <div id="loyalty-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative">
+      <button onclick="toggleLoyaltyModal(false)" class="absolute top-4 right-4 bg-stone-100 p-2 rounded-full hover:bg-stone-200">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="crown" class="w-6 h-6 text-amber-600"></i>
+        <h3 class="font-serif-luxury text-xl font-bold">HỆ THỐNG THÀNH VIÊN AURA VIP</h3>
+      </div>
+      <p class="text-xs text-stone-500 mb-6">Tích điểm tự động khi mua hàng (50.000 ₫ = 1 Điểm). Đổi điểm nhận đặc quyền cao cấp.</p>
+
+      <div id="loyalty-user-progress" class="bg-stone-900 text-white p-5 rounded-2xl mb-6"></div>
+
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700">Các Hạng Thành Viên & Ưu Đãi</h4>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="border border-stone-200 p-3 rounded-xl bg-stone-50">
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">HẠNG BẠC</span>
+            <p class="text-xs font-bold mt-2">0 - 199 Điểm</p>
+            <ul class="text-[10px] text-stone-500 mt-1 space-y-1">
+              <li>• Tích điểm 50k = 1đ</li>
+              <li>• Voucher sinh nhật</li>
+            </ul>
+          </div>
+          <div class="border border-amber-300 p-3 rounded-xl bg-amber-50/50">
+            <span class="text-[10px] font-bold text-amber-900 bg-amber-200 px-2 py-0.5 rounded-full">HẠNG VÀNG</span>
+            <p class="text-xs font-bold mt-2">200 - 499 Điểm</p>
+            <ul class="text-[10px] text-amber-900 mt-1 space-y-1 font-medium">
+              <li>• <strong>Giảm 5%</strong> mọi đơn hàng</li>
+              <li>• X2 Điểm sinh nhật</li>
+            </ul>
+          </div>
+          <div class="border border-stone-900 p-3 rounded-xl bg-stone-900 text-white">
+            <span class="text-[10px] font-bold text-stone-900 bg-amber-400 px-2 py-0.5 rounded-full">KIM CƯƠNG</span>
+            <p class="text-xs font-bold mt-2">500+ Điểm</p>
+            <ul class="text-[10px] text-stone-300 mt-1 space-y-1">
+              <li>• <strong>Giảm 10%</strong> mọi đơn</li>
+              <li>• Miễn phí Ship trọn đời</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AUTH (ĐĂNG NHẬP / ĐĂNG KÝ) -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 bg-stone-100 p-2 rounded-full hover:bg-stone-200">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <h3 class="font-serif-luxury text-xl font-bold text-center mb-1">AURA LUXE MEMBER</h3>
+      <p class="text-xs text-stone-500 text-center mb-6">Đăng nhập để tích điểm & nhận đặc quyền hạng thành viên</p>
+
+      <div class="flex border-b border-stone-200 mb-4">
+        <button onclick="switchAuthMethod('email')" id="auth-tab-email" class="w-1/2 pb-2 text-xs font-bold border-b-2 border-stone-900 text-stone-900">Email / Password</button>
+        <button onclick="switchAuthMethod('phone')" id="auth-tab-phone" class="w-1/2 pb-2 text-xs font-bold border-b-2 border-transparent text-stone-400">SĐT + OTP</button>
+      </div>
+
+      <form id="auth-form-email" onsubmit="handleLogin(event, 'email')" class="space-y-3">
+        <input id="login-email" type="email" required placeholder="Nhập Email của bạn..." class="w-full p-2.5 text-xs border border-stone-300 rounded-xl">
+        <input id="login-pass" type="password" required placeholder="Nhập Mật khẩu..." class="w-full p-2.5 text-xs border border-stone-300 rounded-xl">
+        <button type="submit" class="w-full py-3 bg-stone-900 text-white text-xs font-bold uppercase rounded-xl hover:bg-stone-800">Đăng Nhập</button>
+      </form>
+
+      <form id="auth-form-phone" onsubmit="handleLogin(event, 'phone')" class="space-y-3 hidden">
+        <div class="flex gap-2">
+          <input id="login-phone" type="tel" required placeholder="Nhập SĐT..." class="flex-grow p-2.5 text-xs border border-stone-300 rounded-xl">
+          <button type="button" onclick="alert('Mã OTP của bạn là: 8888')" class="px-3 py-2 bg-stone-200 text-xs font-semibold rounded-xl">Gửi OTP</button>
+        </div>
+        <input id="login-otp" type="text" placeholder="Nhập mã OTP (Mặc định: 8888)" class="w-full p-2.5 text-xs border border-stone-300 rounded-xl">
+        <button type="submit" class="w-full py-3 bg-stone-900 text-white text-xs font-bold uppercase rounded-xl hover:bg-stone-800">Xác Nhận OTP & Đăng Nhập</button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-stone-100 text-center">
+        <p class="text-[11px] text-stone-400 uppercase tracking-wider mb-3">Hoặc đăng nhập nhanh qua</p>
+        <div class="flex gap-3 justify-center">
+          <button onclick="handleSocialLogin('Google')" class="flex items-center gap-2 px-4 py-2 border border-stone-300 rounded-xl text-xs font-semibold hover:bg-stone-50">
+            <i data-lucide="chrome" class="w-4 h-4 text-red-500"></i> Google
+          </button>
+          <button onclick="handleSocialLogin('Facebook')" class="flex items-center gap-2 px-4 py-2 border border-stone-300 rounded-xl text-xs font-semibold hover:bg-stone-50">
+            <i data-lucide="facebook" class="w-4 h-4 text-blue-600"></i> Facebook
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SẢN PHẨM & VARIANT -->
+  <div id="product-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative flex flex-col md:flex-row">
+      <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 bg-stone-100 p-2 rounded-full hover:bg-stone-200">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div class="md:w-1/2 bg-stone-100 flex items-center justify-center p-6">
+        <img id="modal-img" src="" class="max-h-80 object-cover rounded-lg">
+      </div>
+      <div class="md:w-1/2 p-6 flex flex-col justify-between">
+        <div>
+          <span id="modal-category" class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Category</span>
+          <h3 id="modal-title" class="font-serif-luxury text-xl font-bold mt-1">Product Title</h3>
+          <p id="modal-price" class="text-lg font-bold text-stone-900 mt-2">0 ₫</p>
+          <p id="modal-desc" class="text-xs text-stone-500 mt-3 leading-relaxed">Description...</p>
+
+          <div class="mt-4">
+            <label id="t-label-color" class="text-xs font-bold uppercase tracking-wider text-stone-700 block mb-2">Màu sắc:</label>
+            <div id="modal-colors" class="flex gap-2"></div>
+          </div>
+
+          <div class="mt-4">
+            <label id="t-label-size" class="text-xs font-bold uppercase tracking-wider text-stone-700 block mb-2">Kích thước (Size):</label>
+            <div id="modal-sizes" class="flex gap-2"></div>
+          </div>
+
+          <div class="mt-4 text-xs">
+            <span id="t-label-stock" class="text-stone-500">Tồn kho khả dụng:</span>
+            <span id="modal-stock-count" class="font-bold text-emerald-600">0 món</span>
+          </div>
+        </div>
+        <button id="add-to-cart-btn" onclick="addCurrentVariantToCart()" class="mt-6 w-full py-3 bg-stone-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-stone-800 transition">
+          Thêm vào Giỏ hàng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWER GIỎ HÀNG -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
+      <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+        <h3 id="t-cart-title" class="font-bold text-lg uppercase tracking-wider">Giỏ Hàng Của Bạn</h3>
+        <button onclick="toggleCartDrawer(false)" class="p-2 hover:bg-stone-100 rounded-full">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="cart-items-container" class="p-6 flex-grow overflow-y-auto divide-y divide-stone-100"></div>
+
+      <div class="p-6 border-t border-stone-200 bg-stone-50">
+        <div class="mb-4">
+          <label id="t-label-city" class="text-[11px] font-bold uppercase text-stone-600">Chọn Tỉnh/Thành nhận hàng (API Ship GHN Mock):</label>
+          <select id="shipping-city-select" onchange="calculateShippingFee()" class="w-full mt-1 p-2 text-xs border border-stone-300 rounded-lg bg-white">
+            <option value="HCM">TP. Hồ Chí Minh (Phí ship GHN: 25.000 ₫)</option>
+            <option value="HN">Hà Nội (Phí ship GHN: 35.000 ₫)</option>
+            <option value="OTHER">Tỉnh thành khác (Phí ship GHN: 45.000 ₫)</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2 mb-4">
+          <input id="voucher-input" type="text" placeholder="Mã giảm giá (VD: GENZ10)" class="flex-grow p-2 text-xs border border-stone-300 rounded-lg uppercase">
+          <button onclick="applyVoucher()" class="px-3 py-2 bg-stone-200 hover:bg-stone-300 text-xs font-bold rounded-lg">Áp dụng</button>
+        </div>
+
+        <div class="space-y-1.5 text-xs text-stone-600 mb-4">
+          <div class="flex justify-between"><span>Tiền hàng:</span><span id="summary-subtotal">0 ₫</span></div>
+          <div class="flex justify-between"><span>Phí vận chuyển (GHN):</span><span id="summary-shipping">0 ₫</span></div>
+          <div class="flex justify-between text-emerald-600"><span>Giảm giá Voucher:</span><span id="summary-discount">-0 ₫</span></div>
+          <div class="flex justify-between text-base font-bold text-stone-900 pt-2 border-t border-stone-200">
+            <span>Tổng thanh toán (COD):</span><span id="summary-final">0 ₫</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 mb-4">
+          <input id="customer-name" type="text" placeholder="Họ và tên người nhận *" class="w-full p-2 text-xs border border-stone-300 rounded-lg">
+          <input id="customer-phone" type="text" placeholder="Số điện thoại nhận hàng *" class="w-full p-2 text-xs border border-stone-300 rounded-lg">
+        </div>
+
+        <div class="flex items-center gap-2 mb-4 p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[11px]">
+          <i data-lucide="truck" class="w-4 h-4"></i>
+          <span>Phương thức: <strong>COD (Thanh toán khi nhận hàng)</strong></span>
+        </div>
+
+        <button onclick="processCheckout()" class="w-full py-3.5 bg-stone-900 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-stone-800 transition">
+          Xác Nhận Đặt Hàng COD
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NHÚNG MODULE SCRIPT -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
